@@ -1,479 +1,352 @@
-<!DOCTYPE html>
+<!--
+Tea Addict — Ultra Premium & Cute Single-File Frontend
+Features:
+- Single HTML file (HTML + CSS + JS)
+- No backend required (orders open WhatsApp or copy JSON), stores cart in localStorage
+- High-quality SVG artwork, microanimations, responsive layout
+- Ready-to-show to clients; remove comments before sending to production if desired
+
+How to use:
+1) Save this file as `index.html`.
+2) Upload to GitHub Pages, Netlify, or any static host (or open locally).
+3) To accept orders via WhatsApp, change STORE_PHONE variable in the script.
+4) Optional: integrate with Formspree or your API by replacing the sendOrder() function.
+-->
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Tea Addict — Cozy Tea Stall</title>
-<meta name="description" content="Cute, classy, fully responsive tea stall website — single file, ready to use." />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tea Addict — Ultra Premium</title>
+  <meta name="description" content="Tea Addict — premium, adorable, animated tea stall landing page. Single file HTML/CSS/JS." />
 
-<style>
-  /* ============ Theme ============ */
-  :root{
-    --bg:#fffaf5;
-    --ink:#3f372f;
-    --muted:#6a5a4f;
-    --brand:#6b4226;
-    --brand-2:#dba77a;
-    --accent:#f9d8c4;
-    --card:#fcefe3;
-    --ring:rgba(107,66,38,.25);
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);color:var(--ink);font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif}
-  img,svg{max-width:100%;display:block}
-  a{color:inherit}
-  .container{max-width:1200px;margin:auto;padding:16px 20px}
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 
-  /* ============ Header ============ */
-  header{
-    position:sticky; top:0; z-index:20;
-    background:linear-gradient(180deg,var(--accent),#fbe3d1);
-    box-shadow:0 6px 20px rgba(0,0,0,.08);
-    backdrop-filter:saturate(130%) blur(6px);
-  }
-  .brand{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-  .logo{
-    display:flex;align-items:center;gap:12px;
-  }
-  .logo-badge{
-    width:40px;height:40px;border-radius:12px;
-    background: radial-gradient(60% 60% at 40% 35%, #ffe9d6 0%, #ffd8b8 60%, #ffcaa0 100%);
-    display:grid;place-items:center; box-shadow:0 6px 16px rgba(0,0,0,.12);
-  }
-  .logo-badge span{font-size:20px}
-  h1{font-weight:800;letter-spacing:.3px;font-size:clamp(1.4rem,3vw,2rem);margin:0;color:var(--brand)}
-  nav a{
-    text-decoration:none;font-weight:700;padding:10px 14px;border-radius:999px;
-    margin:0 6px; display:inline-block;
-  }
-  nav a:hover{background:rgba(107,66,38,.1)}
-  @media (max-width:768px){ nav{width:100%;text-align:center} }
+  <style>
+    :root{
+      --bg: #fff7f0;
+      --ink: #3b2f2a;
+      --muted: #7b6b62;
+      --brand: #6d4328;
+      --accent: #ffd9b3;
+      --card: #fff;
+      --glass: rgba(255,255,255,0.6);
+      --glass-2: rgba(255,240,230,0.8);
+      --success: #2aa876;
+      --shadow: 0 18px 50px rgba(46,33,25,0.12);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto;line-height:1.35;color:var(--ink);background:linear-gradient(180deg,#fffaf2 0%,#fff7f0 40%)}
+    a{color:inherit}
+    img,svg{max-width:100%;display:block}
+    .container{max-width:1180px;margin:0 auto;padding:24px}
 
-  /* ============ Hero ============ */
-  .hero{position:relative;text-align:center;padding:0 20px 34px}
-  .hero-sub{color:var(--muted);margin:10px 0 0;font-size:clamp(1rem,2.2vw,1.25rem)}
-  .cup-wrap{position:relative; display:grid; place-items:center; margin:12px auto 0}
-  .steam{position:absolute; left:50%; top:7%; transform:translateX(-50%); display:flex; gap:10px; pointer-events:none}
-  .steam span{
-    width:14px;height:46px;border-radius:999px;background:rgba(255,255,255,.85);
-    box-shadow:0 8px 22px rgba(0,0,0,.08);
-    animation:rise 3.2s ease-in infinite;
-  }
-  .steam span:nth-child(2){animation-delay:.8s}
-  .steam span:nth-child(3){animation-delay:1.6s}
-  @keyframes rise{
-    0%{transform:translateY(0) scale(1);opacity:1}
-    100%{transform:translateY(-120px) scale(.6);opacity:0}
-  }
+    /* Header */
+    header{position:sticky;top:0;background:linear-gradient(180deg,rgba(255,255,255,0.8),rgba(255,250,246,0.6));backdrop-filter:blur(6px);box-shadow:0 6px 18px rgba(0,0,0,0.05);z-index:30}
+    .brand{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0}
+    .logo{display:flex;align-items:center;gap:12px}
+    .logo-badge{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#fff1e6,#ffd8b8);box-shadow:0 12px 30px rgba(109,67,40,0.12);font-size:26px}
+    h1{font-family:'Playfair Display',serif;margin:0;font-size:20px;color:var(--brand)}
+    nav{display:flex;gap:10px;align-items:center}
+    nav a{padding:8px 12px;border-radius:999px;font-weight:600}
+    nav a:hover{background:var(--glass)}
 
-  /* ============ Animated Scene ============ */
-  .scene-wrap{
-    width:100%;
-    background:linear-gradient(180deg,#ffeede 0%, #fff8f1 60%, transparent 100%);
-    overflow:hidden;
-    border-bottom:1px solid #f2cbb0;
-  }
-  .scene{
-    width:100%;
-    max-width:1200px;
-    margin:0 auto;
-    display:block;
-  }
+    /* Hero */
+    .hero{display:grid;grid-template-columns:1fr 480px;gap:28px;align-items:center;padding:36px 0}
+    .hero-copy{max-width:720px}
+    .eyebrow{display:inline-block;background:linear-gradient(90deg,#fff6ea,#fff0e0);padding:6px 12px;border-radius:999px;font-weight:700;color:var(--brand);box-shadow:0 6px 20px rgba(109,67,40,0.06);font-size:13px}
+    .headline{font-family:'Playfair Display',serif;font-size:clamp(28px, 4.6vw, 48px);margin:14px 0 12px;line-height:1.05}
+    .lead{color:var(--muted);font-size:17px;margin-bottom:18px}
+    .hero-cta{display:flex;gap:12px;align-items:center}
+    .btn{background:var(--brand);color:#fff;border:0;padding:12px 18px;border-radius:14px;font-weight:700;cursor:pointer;box-shadow:0 12px 28px rgba(109,67,40,0.2)}
+    .btn.secondary{background:transparent;border:2px solid rgba(109,67,40,0.08);color:var(--brand);}
 
-  /* ============ Sections ============ */
-  .section{padding:28px 20px}
-  .section h2{font-size:clamp(1.3rem,2.6vw,1.8rem);margin:0 0 18px;color:#5b3a29;text-align:center}
+    /* Cup card */
+    .cup-card{background:linear-gradient(180deg,rgba(255,255,255,0.9),#fff);border-radius:22px;padding:28px;box-shadow:var(--shadow);position:relative;overflow:visible}
+    .cup-shelf{display:flex;align-items:flex-end;gap:18px}
+    .cup-shelf .cup-svg{width:240px;height:240px}
 
-  /* ============ Menu ============ */
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
-  .card{
-    background:var(--card);
-    border-radius:18px;
-    padding:18px;text-align:center;
-    box-shadow:0 10px 28px rgba(0,0,0,.08);
-    transition:transform .18s ease, box-shadow .18s ease, opacity .3s ease;
-    opacity:0; transform:translateY(10px);
-  }
-  .card.in{opacity:1; transform:translateY(0)}
-  .card:hover{transform:translateY(-4px); box-shadow:0 14px 32px rgba(0,0,0,.10)}
-  .card .pic{width:112px;height:112px;margin:2px auto 10px;display:grid;place-items:center}
-  .card h3{margin:6px 0 4px;font-size:1.05rem}
-  .desc{color:var(--muted);font-size:.95rem;margin:0 0 8px}
-  .price{font-weight:800;margin:6px 0 12px}
-  .btn{
-    display:inline-flex;align-items:center;gap:8px;
-    border:0;border-radius:12px;background:var(--brand);
-    color:#fff;padding:10px 14px;cursor:pointer;font-weight:700;
-    box-shadow:0 8px 18px rgba(107,66,38,.25);
-  }
-  .btn:hover{background:#8b5a3c}
-  .btn:focus{outline:3px solid var(--ring); outline-offset:2px}
+    /* Animated steam */
+    .steam{position:absolute;left:60%;top:10%;transform:translateX(-50%);display:flex;gap:8px}
+    .steam span{width:12px;height:50px;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,0.9),transparent);opacity:.95;filter:blur(.6px);animation:steam 3s ease-in-out infinite}
+    .steam span:nth-child(2){animation-delay:.6s}
+    .steam span:nth-child(3){animation-delay:1.2s}
+    @keyframes steam{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-90px) scale(.7);opacity:0}}
 
-  /* ============ Contact ============ */
-  .contact{background:var(--accent);border-top:1px solid #f2cbb0}
-  .contact form{max-width:560px;margin:12px auto 0;text-align:left;background:#fff;border-radius:16px;padding:16px;box-shadow:0 8px 22px rgba(0,0,0,.06)}
-  .field{margin:10px 0}
-  .field input,.field textarea{
-    width:100%;padding:10px 12px;border-radius:10px;border:1px solid #ead8cb; font:inherit;
-  }
-  .field input:focus,.field textarea:focus{outline:3px solid var(--ring); border-color:#e2c1a8}
+    /* Menu */
+    section#menu{padding:28px 0}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px}
+    .product{background:linear-gradient(180deg,#fff,#fffaf5);border-radius:18px;padding:14px;position:relative;overflow:hidden;box-shadow:0 14px 40px rgba(60,40,30,0.07);transition:transform .18s ease,box-shadow .18s ease}
+    .product:hover{transform:translateY(-8px);box-shadow:0 26px 60px rgba(60,40,30,0.12)}
+    .product .art{width:120px;height:120px;margin:6px auto 10px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),#fff)}
+    .product h4{margin:8px 0 6px;text-align:center}
+    .meta{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
 
-  /* ============ Footer & Toast ============ */
-  footer{background:var(--brand);color:#fff;text-align:center;padding:14px;font-size:.95rem}
-  .toast{
-    position:fixed;right:20px;bottom:20px;min-width:240px;max-width:320px;background:#2c2c2c;color:#fff;
-    padding:12px 14px;border-radius:12px;opacity:0;transform:translateY(20px);pointer-events:none;transition:.3s; z-index:50
-  }
-  .toast.show{opacity:1;transform:translateY(0);pointer-events:auto}
-</style>
+    /* shine effect */
+    .product .shine{position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,transparent 0%, rgba(255,255,255,0.22) 50%, transparent 100%);transform:translateX(-150%)}
+    .product:hover .shine{animation:slide 1s linear}
+    @keyframes slide{to{transform:translateX(150%)}}
+
+    /* Cart */
+    .cart-fab{position:fixed;right:20px;bottom:20px;z-index:40;background:linear-gradient(180deg,#fff,#fff6ee);border-radius:999px;padding:12px 16px;box-shadow:0 20px 50px rgba(60,40,30,0.12);display:flex;align-items:center;gap:10px}
+    .cart-drawer{position:fixed;right:20px;bottom:86px;width:360px;max-width:92vw;background:linear-gradient(180deg,#ffffff,#fff7f2);border-radius:16px;box-shadow:0 24px 60px rgba(60,40,30,0.12);padding:12px;transform:translateY(12px);opacity:0;pointer-events:none;transition:all .22s ease}
+    .cart-drawer.open{transform:translateY(0);opacity:1;pointer-events:auto}
+    .cart-items{max-height:360px;overflow:auto}
+    .cart-row{display:flex;align-items:center;justify-content:space-between;padding:8px 6px;border-bottom:1px dashed #f3e7df}
+
+    /* Footer */
+    footer{padding:18px 0;text-align:center;color:var(--muted)}
+
+    /* Responsive */
+    @media(max-width:950px){.hero{grid-template-columns:1fr;}.cup-card{order: -1}.hero-cta{flex-direction:column;align-items:flex-start}}
+
+    /* little polish */
+    .chip{background:#fff6ea;padding:6px 10px;border-radius:999px;font-weight:700;color:var(--brand);box-shadow:0 8px 24px rgba(109,67,40,0.06)}
+    .muted{color:var(--muted)}
+  </style>
 </head>
-
-<body data-whatsapp="+919876543210">
-  <!-- ================= HEADER ================= -->
+<body>
   <header>
     <div class="container brand">
       <div class="logo">
-        <div class="logo-badge"><span>🍵</span></div>
-        <h1>Tea Addict</h1>
+        <div class="logo-badge">🍵</div>
+        <div>
+          <h1>Tea Addict</h1>
+          <div class="muted" style="font-size:12px">Cute. Premium. Ready-to-love.</div>
+        </div>
       </div>
       <nav>
         <a href="#menu">Menu</a>
         <a href="#contact">Contact</a>
-        <a href="#find-us">Find Us</a>
+        <button class="chip" id="theme-toggle" title="Toggle theme (just for show)">✨ Theme</button>
       </nav>
     </div>
   </header>
 
-  <main>
-    <!-- ================= ANIMATED SVG SCENE (GSAP) ================= -->
-    <div class="scene-wrap" aria-hidden="true">
-      <svg class="scene" viewBox="0 0 1200 320" role="img" aria-label="Tea journey scene">
-        <!-- Sky -->
-        <defs>
-          <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stop-color="#ffe8cf"/>
-            <stop offset="100%" stop-color="#fff7ee"/>
-          </linearGradient>
-          <linearGradient id="field" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stop-color="#c1e8a3"/>
-            <stop offset="100%" stop-color="#7ecb6d"/>
-          </linearGradient>
-          <filter id="soft"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".18"/></filter>
-        </defs>
-
-        <rect x="0" y="0" width="1200" height="320" fill="url(#sky)"/>
-
-        <!-- Sun -->
-        <g id="sun" filter="url(#soft)">
-          <circle cx="150" cy="80" r="34" fill="#ffd66e"/>
-          <circle cx="150" cy="80" r="52" fill="#ffe9a9" opacity=".4"/>
-        </g>
-
-        <!-- Clouds -->
-        <g id="clouds" fill="#ffffff">
-          <g class="cloud">
-            <ellipse cx="340" cy="90" rx="50" ry="22" opacity=".9"/>
-            <ellipse cx="380" cy="90" rx="38" ry="18" opacity=".9"/>
-            <ellipse cx="360" cy="78" rx="28" ry="14" opacity=".9"/>
-          </g>
-          <g class="cloud">
-            <ellipse cx="760" cy="70" rx="48" ry="20" opacity=".9"/>
-            <ellipse cx="800" cy="70" rx="36" ry="16" opacity=".9"/>
-            <ellipse cx="780" cy="58" rx="26" ry="12" opacity=".9"/>
-          </g>
-          <g class="cloud">
-            <ellipse cx="1020" cy="105" rx="44" ry="18" opacity=".9"/>
-            <ellipse cx="1056" cy="105" rx="32" ry="14" opacity=".9"/>
-            <ellipse cx="1038" cy="95" rx="22" ry="10" opacity=".9"/>
-          </g>
-        </g>
-
-        <!-- Hills -->
-        <path d="M0 200 C200 140, 340 240, 560 190 S 980 160, 1200 220 L1200 320 L0 320 Z" fill="#a0d58a"/>
-        <path d="M0 230 C180 180, 360 270, 540 220 S 960 210, 1200 250 L1200 320 L0 320 Z" fill="url(#field)"/>
-
-        <!-- Tea rows -->
-        <g id="rows" stroke="#5ea454" stroke-width="3" stroke-linecap="round">
-          <path d="M60 260 Q 120 240 180 260"/>
-          <path d="M140 268 Q 210 248 280 268"/>
-          <path d="M240 276 Q 320 256 400 276"/>
-          <path d="M360 284 Q 450 264 540 284"/>
-          <path d="M500 292 Q 600 272 700 292"/>
-          <path d="M660 300 Q 770 280 880 300"/>
-          <path d="M840 308 Q 960 288 1080 308"/>
-        </g>
-
-        <!-- Basket -->
-        <g id="basket" transform="translate(940,210)" filter="url(#soft)">
-          <ellipse cx="0" cy="36" rx="46" ry="10" fill="#b47842" opacity=".55"/>
-          <path d="M-56 6 h112 l-16 50 a16 16 0 0 1 -16 12 h-48 a16 16 0 0 1 -16 -12z" fill="#d89a5c" stroke="#b47842" stroke-width="4"/>
-          <path d="M-40 6 q40 -46 80 0" fill="none" stroke="#b47842" stroke-width="6"/>
-          <!-- Leaves inside -->
-          <g id="leaves">
-            <path d="M-10 28 q8 -18 18 0 q-8 18 -18 0" fill="#52a34b"/>
-            <path d="M10 26 q8 -18 18 0 q-8 18 -18 0" fill="#52a34b"/>
-            <path d="M-28 30 q8 -18 18 0 q-8 18 -18 0" fill="#52a34b"/>
-          </g>
-        </g>
-
-        <!-- Kettle -->
-        <g id="kettle" transform="translate(220,210)">
-          <ellipse cx="0" cy="38" rx="44" ry="10" fill="#cfc7bf" opacity=".5"/>
-          <path d="M-46 2 h92 v38 a28 22 0 0 1 -28 22 h-36 a28 22 0 0 1 -28 -22z" fill="#f0ece7" stroke="#cfc7bf" stroke-width="4"/>
-          <path d="M-46 2 q46 -30 92 0" fill="none" stroke="#cfc7bf" stroke-width="6"/>
-          <path d="M46 14 q24 8 24 22 t-24 22" fill="none" stroke="#cfc7bf" stroke-width="6" stroke-linecap="round"/>
-          <path d="M-10 -18 q32 -20 64 0" fill="none" stroke="#cfc7bf" stroke-width="6"/>
-          <!-- steam puffs from kettle -->
-          <g id="steam-kettle" opacity="0.0">
-            <circle cx="70" cy="-10" r="6" fill="#ffffff"/>
-            <circle cx="84" cy="-24" r="8" fill="#ffffff" opacity=".8"/>
-            <circle cx="100" cy="-42" r="10" fill="#ffffff" opacity=".6"/>
-          </g>
-        </g>
-      </svg>
-    </div>
-
-    <!-- ================= HERO ================= -->
+  <main class="container">
     <section class="hero">
-      <div class="cup-wrap">
-        <div class="steam"><span></span><span></span><span></span></div>
-
-        <!-- Inline SVG teacup (cute + classy, no external image) -->
-        <svg class="cup" width="420" height="300" viewBox="0 0 420 300" aria-label="Steaming teacup illustration" role="img">
-          <defs>
-            <linearGradient id="cupBody" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stop-color="#ffffff"/>
-              <stop offset="100%" stop-color="#f3eee9"/>
-            </linearGradient>
-            <linearGradient id="tea" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stop-color="#c58a55"/>
-              <stop offset="100%" stop-color="#a96c3a"/>
-            </linearGradient>
-            <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-opacity=".25"/></filter>
-          </defs>
-
-          <!-- Saucer -->
-          <ellipse cx="210" cy="240" rx="150" ry="22" fill="#e8ddd3" filter="url(#shadow)"/>
-
-          <!-- Cup body -->
-          <path d="M100 95 h220 a10 10 0 0 1 10 10 v70 a70 55 0 0 1 -70 55 h-100 a70 55 0 0 1 -70 -55 v-70 a10 10 0 0 1 10 -10 z"
-                fill="url(#cupBody)" stroke="#d9cfc6" stroke-width="3" />
-
-          <!-- Tea surface -->
-          <ellipse cx="210" cy="130" rx="98" ry="18" fill="url(#tea)" />
-
-          <!-- Cup rim highlight -->
-          <ellipse cx="210" cy="120" rx="110" ry="20" fill="none" stroke="#ffffff" stroke-width="6" opacity=".6"/>
-
-          <!-- Handle -->
-          <path d="M325 130 q55 0 55 40 t-55 40"
-                fill="none" stroke="#d9cfc6" stroke-width="12" />
-          <path d="M325 140 q38 0 38 30 t-38 30"
-                fill="none" stroke="#ffffff" stroke-width="6" opacity=".7" />
-
-          <!-- Cute tag (tea bag) -->
-          <path id="teabag" d="M190 160 v36 a8 8 0 0 0 8 8 h24 a8 8 0 0 0 8 -8 v-36 z" fill="#ffd29c" stroke="#e8b77a" />
-          <line id="string" x1="210" y1="160" x2="210" y2="132" stroke="#caa27c" stroke-width="2" />
-        </svg>
-      </div>
-      <p class="hero-sub">Your Daily Cup of Happiness</p>
-    </section>
-
-    <!-- ================= MENU ================= -->
-    <section id="menu" class="section">
-      <div class="container">
-        <h2>Our Special Menu</h2>
-        <div id="menu-grid" class="grid" role="list"></div>
-      </div>
-    </section>
-
-    <!-- ================= CONTACT ================= -->
-    <section id="contact" class="section contact">
-      <div class="container">
-        <h2>Contact Us</h2>
-        <p style="text-align:center;margin:0 0 8px;">
-          <strong>Phone:</strong> <a href="tel:+919876543210">+91 98765 43210</a>
-        </p>
-        <form id="contact-form" aria-label="Contact form">
-          <div class="field">
-            <label>Name<br><input name="name" required placeholder="Your name"></label>
+      <div class="hero-copy">
+        <span class="eyebrow">Small-batch • Handcrafted</span>
+        <h2 class="headline">Premium, adorable tea experiences — served with a smile.</h2>
+        <p class="lead">Delight your senses with hot, handcrafted blends. Bring warmth, nostalgia and that cozy feeling to every cup — our site shows the story and the vibe, not just the menu.</p>
+        <div class="hero-cta">
+          <button class="btn" id="order-now">Order Now</button>
+          <button class="btn secondary" id="view-menu">View Menu</button>
+        </div>
+        <div style="margin-top:18px;display:flex;gap:12px;align-items:center">
+          <div style="flex:0 0 46px"><svg width="46" height="46" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#fff6ea"/></svg></div>
+          <div>
+            <div style="font-weight:700">Free pick-up under ₹199</div>
+            <div class="muted" style="font-size:13px">Delivery & B2B options available</div>
           </div>
-          <div class="field">
-            <label>Phone or Email<br><input name="contact" required placeholder="+91… or you@example.com"></label>
+        </div>
+      </div>
+
+      <div class="cup-card">
+        <div class="steam" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="cup-shelf">
+          <!-- large cute cup SVG with gentle animated teabag -->
+          <svg class="cup-svg" viewBox="0 0 420 300" role="img" aria-label="Steaming cup">
+            <defs>
+              <linearGradient id="teaA" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#d79a64"/><stop offset="100%" stop-color="#b06634"/></linearGradient>
+              <filter id="soft"><feDropShadow dx="0" dy="12" stdDeviation="18" flood-opacity=".12"/></filter>
+            </defs>
+            <ellipse cx="210" cy="260" rx="140" ry="16" fill="#f0e5db" filter="url(#soft)"/>
+            <path d="M110 80 h200 a14 14 0 0 1 14 14 v72 a84 66 0 0 1 -84 66 h-60 a84 66 0 0 1 -84 -66 v-72 a14 14 0 0 1 14 -14 z" fill="#fff" stroke="#f0e0d4" stroke-width="3"/>
+            <ellipse cx="210" cy="130" rx="92" ry="18" fill="url(#teaA)"/>
+            <ellipse cx="210" cy="120" rx="106" ry="22" fill="none" stroke="#fff" stroke-width="6" opacity=".65"/>
+            <g id="teabag">
+              <rect x="190" y="158" width="40" height="42" rx="6" fill="#ffd9a8" stroke="#e9b87a"/>
+              <line x1="210" y1="158" x2="210" y2="126" stroke="#caa27c" stroke-width="2"/>
+            </g>
+          </svg>
+          <div style="flex:1">
+            <h3 style="margin:6px 0 2px">Signature Masala Chai</h3>
+            <div class="muted">Cardamom, clove, fresh ginger — slow-brewed.</div>
+            <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+              <div style="font-weight:800;font-size:20px;color:var(--brand)">₹25</div>
+              <button class="btn" id="add-sample">Add to Cart</button>
+            </div>
           </div>
-          <div class="field">
-            <label>Message<br><textarea name="message" rows="4" required placeholder="I’d like to know about…"></textarea></label>
-          </div>
-          <button class="btn" type="submit">Send Message</button>
-        </form>
-        <p style="text-align:center;margin:10px 0 0;color:var(--muted);font-size:.95rem">
-          We typically reply within a few minutes during open hours.
-        </p>
+        </div>
       </div>
     </section>
 
-    <!-- ================= FIND US ================= -->
-    <section id="find-us" class="section">
-      <div class="container">
-        <h2>Find Us</h2>
-        <p style="text-align:center;max-width:720px;margin:0 auto;color:var(--muted)">
-          Near Central Park, Main Street — City, State. Open 7AM–9PM daily.
-        </p>
+    <section id="menu">
+      <h3 style="margin-bottom:6px">Our Menu</h3>
+      <p class="muted" style="margin-top:0">Tap any item to add to cart — everything is single-origin where possible.</p>
+      <div class="grid" id="menu-grid" style="margin-top:18px"></div>
+    </section>
+
+    <section id="contact" style="margin-top:34px">
+      <h3>Contact</h3>
+      <p class="muted" style="margin-top:6px">Questions, collaborations or custom blends — say hello.</p>
+      <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap">
+        <input id="contact-name" placeholder="Your name" style="padding:12px;border-radius:12px;border:1px solid #f2e6df;flex:1;min-width:220px" />
+        <input id="contact-email" placeholder="Email or phone" style="padding:12px;border-radius:12px;border:1px solid #f2e6df;flex:1;min-width:220px" />
+        <textarea id="contact-msg" placeholder="Message" style="padding:12px;border-radius:12px;border:1px solid #f2e6df;flex-basis:100%;min-height:120px"></textarea>
+        <button class="btn" id="send-msg">Send Message</button>
       </div>
     </section>
+
   </main>
 
+  <div class="cart-fab" role="region" aria-label="Cart">
+    <div style="display:flex;flex-direction:column;text-align:right">
+      <small class="muted">Cart</small>
+      <strong id="cart-count">0</strong>
+    </div>
+    <button class="btn" id="open-cart">Open</button>
+  </div>
+
+  <div class="cart-drawer" id="cart-drawer" aria-hidden="true">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <strong>Your Order</strong>
+      <div class="muted" id="cart-total">₹0</div>
+    </div>
+    <div class="cart-items" id="cart-items">No items yet</div>
+    <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+      <input id="cust-name" placeholder="Name" style="flex:1;padding:10px;border-radius:10px;border:1px solid #f2e6df" />
+      <input id="cust-phone" placeholder="Phone" style="flex:1;padding:10px;border-radius:10px;border:1px solid #f2e6df" />
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn" id="place-order">Place Order</button>
+      <button class="btn secondary" id="export-order">Export</button>
+    </div>
+    <div class="muted" style="margin-top:10px;font-size:13px">Orders open WhatsApp for confirmation — no backend required. Replace sendOrder() to connect your API.</div>
+  </div>
+
   <footer>
-    © <span id="year"></span> Tea Addict • All Rights Reserved
+    © <span id="year"></span> Tea Addict • Crafted with care
   </footer>
 
-  <div class="toast" role="status" aria-live="polite"></div>
-
-  <!-- ================= MENU DATA (editable) ================= -->
-  <script type="application/json" id="menu-data">
-  [
-    {"name":"Masala Chai","price":25,"desc":"Spiced Indian tea with cardamom & ginger.","color":"#6b4226"},
-    {"name":"Green Tea","price":30,"desc":"Light, refreshing, antioxidant-rich.","color":"#2e7d32"},
-    {"name":"Lemon Tea","price":20,"desc":"Zesty lemon with black tea.","color":"#f4c430"},
-    {"name":"Milk Tea","price":25,"desc":"Classic creamy comfort in a cup.","color":"#c49a6c"}
-  ]
-  </script>
-
-  <!-- ================= GSAP CDN ================= -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-
-  <!-- ================= SCRIPTS ================= -->
   <script>
-    // Ensure GSAP runs after it loads
-    window.addEventListener('load', function(){
+    // ---------- Config ----------
+    const STORE_PHONE = '+919876543210'; // change to your number (international format)
+    const CURRENCY = '₹';
 
-      // Year
-      document.getElementById('year').textContent = new Date().getFullYear();
+    // ---------- Sample menu (editable) ----------
+    const MENU = [
+      {id:1,name:'Masala Chai',price:25,desc:'Spiced Indian tea with cardamom & fresh ginger.'},
+      {id:2,name:'Green Matcha',price:80,desc:'Ceremonial-grade matcha, frothy & vibrant.'},
+      {id:3,name:'Lemon Ginger',price:35,desc:'Zesty lemon with warming ginger.'},
+      {id:4,name:'Milk Tea',price:25,desc:'Silky milk tea — comfort in a cup.'},
+      {id:5,name:'Rose Cardamom',price:60,desc:'Delicate rose aroma with cardamom notes.'},
+      {id:6,name:'Honey Ginger',price:40,desc:'Soothing honey with fresh ginger.'}
+    ];
 
-      // Build menu cards from embedded JSON
-      (function(){
-        const grid = document.getElementById('menu-grid');
-        try{
-          const items = JSON.parse(document.getElementById('menu-data').textContent);
-          grid.innerHTML = items.map(it => cardHTML(it)).join('');
-          // Simple reveal animation
-          const cards = Array.from(grid.querySelectorAll('.card'));
-          cards.forEach((c,i)=> setTimeout(()=> c.classList.add('in'), 120*i));
-        }catch(e){
-          grid.innerHTML = '<p>Could not load menu data.</p>';
-        }
+    // ---------- Helpers ----------
+    const $ = q => document.querySelector(q);
+    const $$ = q => Array.from(document.querySelectorAll(q));
+    const fmt = n => new Intl.NumberFormat('en-IN').format(n);
 
-        function cardHTML(it){
-          // inline SVG icon per item (color-coded)
-          const icon = `
-          <svg width="112" height="112" viewBox="0 0 256 256" aria-hidden="true">
-            <defs>
-              <filter id="s"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-opacity=".18"/></filter>
-            </defs>
-            <rect x="20" y="20" width="216" height="216" rx="28" fill="${it.color}22"></rect>
-            <g filter="url(#s)">
-              <path d="M64 148h104c22 0 40-18 40-40s-18-40-40-40h-16"
-                    fill="none" stroke="${it.color}" stroke-width="12" stroke-linecap="round"/>
-              <path d="M64 68h120v60c0 32-26 58-58 58h-4c-32 0-58-26-58-58V68z"
-                    fill="#fff" stroke="${it.color}" stroke-width="10"/>
-              <path d="M110 48c0 12-12 12-12 24s12 12 12 24"
-                    fill="none" stroke="${it.color}" stroke-width="8" stroke-linecap="round"/>
-              <path d="M138 48c0 12-12 12-12 24s12 12 12 24"
-                    fill="none" stroke="${it.color}" stroke-width="8" stroke-linecap="round"/>
-            </g>
-          </svg>`;
+    // ---------- Render menu ----------
+    const grid = $('#menu-grid');
+    grid.innerHTML = MENU.map(it => (`
+      <div class="product" data-id="${it.id}" data-price="${it.price}">
+        <div class="shine"></div>
+        <div class="art" aria-hidden="true">${miniArt(it.id)}</div>
+        <h4>${it.name}</h4>
+        <div class="muted" style="font-size:13px">${it.desc}</div>
+        <div class="meta">
+          <div style="font-weight:800;color:var(--brand)">${CURRENCY}${it.price}</div>
+          <button class="btn add-btn">Add</button>
+        </div>
+      </div>
+    `)).join('');
 
-          return `
-          <article class="card" role="listitem">
-            <div class="pic">${icon}</div>
-            <h3>${it.name}</h3>
-            <p class="desc">${it.desc || ""}</p>
-            <p class="price">₹${it.price}</p>
-            <button class="btn" data-tea="${it.name}" data-price="${it.price}" aria-label="Order ${it.name}">Order Now</button>
-          </article>`;
-        }
-      })();
+    // small SVG art generator (keeps things cute & premium)
+    function miniArt(seed){
+      const colors = ['#f9dcc2','#ffd7b8','#ffe9d6','#cfe8c9','#cfe4ff','#efe1ff'];
+      const c = colors[seed%colors.length];
+      return `<svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="96" height="96" rx="16" fill="${c}"/><g transform="translate(14,12)"><path d="M5 58c10-20 48-20 54 0" stroke="#b06b3a" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="32" cy="28" rx="30" ry="10" fill="#b06b3a"/></g></svg>`;
+    }
 
-      // Smooth scroll for nav
-      document.querySelectorAll('a[href^="#"]').forEach(a=>{
-        a.addEventListener('click',e=>{
-          const id = a.getAttribute('href').slice(1);
-          const el = document.getElementById(id);
-          if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth'}); }
-        });
-      });
+    // ---------- Cart logic (localStorage) ----------
+    let CART = JSON.parse(localStorage.getItem('tea_cart')||'[]');
+    const saveCart = ()=> localStorage.setItem('tea_cart', JSON.stringify(CART));
 
-      // Toast helper
-      function showToast(html){
-        let toast = document.querySelector('.toast');
-        toast.innerHTML = html;
-        toast.classList.add('show');
-        clearTimeout(showToast._t);
-        showToast._t = setTimeout(()=>toast.classList.remove('show'), 3000);
-      }
+    function renderCart(){
+      const wrap = $('#cart-items');
+      if(CART.length===0) { wrap.innerHTML = '<div class="muted">Your cart is empty.</div>'; $('#cart-count').textContent = 0; $('#cart-total').textContent = CURRENCY+'0'; return; }
+      wrap.innerHTML = CART.map((it,idx)=>`
+        <div class="cart-row">
+          <div>
+            <div><strong>${it.name}</strong></div>
+            <div class="muted">${CURRENCY}${it.price} × ${it.qty}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button onclick="changeQty(${idx},-1)" style="border-radius:10px;padding:6px 8px">−</button>
+            <div style="min-width:28px;text-align:center">${it.qty}</div>
+            <button onclick="changeQty(${idx},1)" style="border-radius:10px;padding:6px 8px">＋</button>
+          </div>
+        </div>
+      `).join('');
+      $('#cart-count').textContent = CART.reduce((s,i)=>s+i.qty,0);
+      $('#cart-total').textContent = CURRENCY + fmt(CART.reduce((s,i)=>s+i.qty*i.price,0));
+    }
+    window.changeQty = (i,delta)=>{ CART[i].qty += delta; if(CART[i].qty<=0) CART.splice(i,1); saveCart(); renderCart(); };
 
-      // WhatsApp order on button click
-      document.body.addEventListener('click', (e)=>{
-        const btn = e.target.closest('.btn[data-tea]');
-        if(!btn) return;
-        const tea = btn.dataset.tea;
-        const price = btn.dataset.price;
-        const phone = (document.body.dataset.whatsapp || "+919876543210").replace(/\D/g,'');
-        const msg = encodeURIComponent(`Hello Tea Addict! I'd like to order: ${tea} (₹${price}).`);
-        window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
-        showToast(`☕ Order started on WhatsApp: <b>${tea}</b>`);
-      });
-
-      // Contact form: open WhatsApp with message (works offline, no backend)
-      document.getElementById('contact-form').addEventListener('submit', (e)=>{
-        e.preventDefault();
-        const data = new FormData(e.target);
-        const name = data.get('name');
-        const contact = data.get('contact');
-        const message = data.get('message');
-        const phone = (document.body.dataset.whatsapp || "+919876543210").replace(/\D/g,'');
-        const text = encodeURIComponent(
-          `Contact enquiry:\nName: ${name}\nContact: ${contact}\nMessage: ${message}`
-        );
-        window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
-        showToast('✅ Message drafted on WhatsApp. You can send it now.');
-        e.target.reset();
-      });
-
-      /* ============ GSAP ANIMATIONS ============ */
-      if (window.gsap){
-        const tl = gsap.timeline({repeat:-1, repeatDelay:0.6});
-
-        // Sun pulse & slight rise
-        tl.to('#sun circle:first-child', {duration:2, scale:1.08, transformOrigin:'50% 50%', yoyo:true, repeat:1, ease:'sine.inOut'}, 0);
-        tl.to('#sun circle:last-child', {duration:2, opacity:0.6, yoyo:true, repeat:1, ease:'sine.inOut'}, 0);
-
-        // Clouds drift
-        gsap.to('.cloud', {
-          x: 80, duration: 14, ease: 'none', repeat: -1, yoyo: true, stagger: {each: 2}
-        });
-
-        // Tea rows gentle wave
-        gsap.utils.toArray('#rows path').forEach((p, i)=>{
-          gsap.to(p, {duration:3 + i*0.2, attr:{ d: p.getAttribute('d') }, // keep path but animate with y tiny
-            y: i%2 ? -2 : 2, repeat:-1, yoyo:true, ease:'sine.inOut'
-          });
-        });
-
-        // Basket leaf wiggle
-        gsap.to('#leaves path', {rotation:5, transformOrigin:'50% 50%', yoyo:true, repeat:-1, duration:1.2, ease:'sine.inOut', stagger:0.15});
-
-        // Kettle steam puffs
-        gsap.to('#steam-kettle', {opacity:1, duration:1.2, yoyo:true, repeat:-1, ease:'sine.inOut'});
-
-        // Teabag swing on cup
-        gsap.to('#teabag', {rotation:6, transformOrigin:'210px 160px', yoyo:true, repeat:-1, duration:1.6, ease:'sine.inOut'});
-        gsap.to('#string', {rotation:6, transformOrigin:'210px 132px', yoyo:true, repeat:-1, duration:1.6, ease:'sine.inOut'});
-
-        // Subtle cup bob
-        gsap.to('.cup', {y:-4, duration:2, repeat:-1, yoyo:true, ease:'sine.inOut'});
-      }
+    // Add handlers
+    grid.addEventListener('click', e =>{
+      const card = e.target.closest('.product'); if(!card) return;
+      const id = Number(card.dataset.id); const price = Number(card.dataset.price);
+      const item = MENU.find(m=>m.id===id); if(!item) return;
+      const found = CART.find(x=>x.id===id);
+      if(found){ found.qty++; } else { CART.push({id:item.id,name:item.name,price:item.price,qty:1}); }
+      saveCart(); renderCart(); toast('Added ' + item.name);
     });
+
+    // quick sample add button
+    $('#add-sample').addEventListener('click', ()=>{ const it = MENU[0]; const f = CART.find(x=>x.id===it.id); if(f) f.qty++; else CART.push({id:it.id,name:it.name,price:it.price,qty:1}); saveCart(); renderCart(); toast('Added '+it.name); });
+
+    // Drawer open
+    $('#open-cart').addEventListener('click', ()=>{ $('#cart-drawer').classList.toggle('open'); $('#cart-drawer').setAttribute('aria-hidden', !$('#cart-drawer').classList.contains('open')); });
+    $('#order-now').addEventListener('click', ()=>{ window.scrollTo({top:document.querySelector('#menu').offsetTop-20,behavior:'smooth'}); });
+    $('#view-menu').addEventListener('click', ()=>{ window.scrollTo({top:document.querySelector('#menu').offsetTop-20,behavior:'smooth'}); });
+
+    // Place order (no backend) — opens WhatsApp with order summary; replace with API call if needed
+    $('#place-order').addEventListener('click', ()=>{
+      const name = $('#cust-name').value.trim(); const phone = $('#cust-phone').value.trim();
+      if(!name || !phone || CART.length===0) return toast('Please provide name, phone and items');
+      const subtotal = CART.reduce((s,i)=>s+i.qty*i.price,0);
+      const lines = [`Order from Tea Addict`,`Name: ${name}`,'Items:'];
+      CART.forEach(i=> lines.push(`- ${i.name} x${i.qty} = ${CURRENCY}${i.qty*i.price}`));
+      lines.push(`Total: ${CURRENCY}${subtotal}`);
+      const text = encodeURIComponent(lines.join('\n'));
+      const wa = `https://wa.me/${STORE_PHONE.replace(/\D/g,'')}?text=${text}`;
+      // optionally clear cart
+      // CART = []; saveCart(); renderCart();
+      window.open(wa,'_blank');
+    });
+
+    // Export order JSON
+    $('#export-order').addEventListener('click', ()=>{
+      const blob = new Blob([JSON.stringify({cart:CART,ts:new Date().toISOString()},null,2)],{type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'tea-order.json'; a.click(); URL.revokeObjectURL(url);
+    });
+
+    // contact message (demo) — copies to clipboard / shows toast (replace with backend)
+    $('#send-msg').addEventListener('click', ()=>{
+      const n = $('#contact-name').value.trim(); const c = $('#contact-email').value.trim(); const m = $('#contact-msg').value.trim();
+      if(!n||!c||!m) return toast('Please fill all contact fields');
+      const summary = `Contact from ${n} (${c})\n\n${m}`;
+      navigator.clipboard && navigator.clipboard.writeText(summary).then(()=>toast('Message copied — paste in WhatsApp or email'));
+    });
+
+    // toast
+    function toast(txt){ const el = document.createElement('div'); el.textContent = txt; el.style.cssText = 'position:fixed;right:20px;bottom:20px;background:#222;color:#fff;padding:10px 14px;border-radius:10px;z-index:60'; document.body.appendChild(el); setTimeout(()=>el.style.opacity=0,2200); setTimeout(()=>el.remove(),2800); }
+
+    // theme toggle just for show
+    $('#theme-toggle').addEventListener('click', ()=>{ document.body.classList.toggle('dark'); toast('Theme switched — mock demo') });
+
+    // initialize
+    document.getElementById('year').textContent = new Date().getFullYear();
+    renderCart();
   </script>
 </body>
 </html>
