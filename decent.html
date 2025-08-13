@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Tea Addict — Cozy Tea Stall</title>
+<meta name="description" content="Cute, classy, fully responsive tea stall website — single file, ready to use." />
+
+<style>
+  /* ============ Theme ============ */
+  :root{
+    --bg:#fffaf5;
+    --ink:#3f372f;
+    --muted:#6a5a4f;
+    --brand:#6b4226;
+    --brand-2:#dba77a;
+    --accent:#f9d8c4;
+    --card:#fcefe3;
+    --ring:rgba(107,66,38,.25);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif}
+  img,svg{max-width:100%;display:block}
+  a{color:inherit}
+  .container{max-width:1200px;margin:auto;padding:16px 20px}
+
+  /* ============ Header ============ */
+  header{
+    position:sticky; top:0; z-index:20;
+    background:linear-gradient(180deg,var(--accent),#fbe3d1);
+    box-shadow:0 6px 20px rgba(0,0,0,.08);
+    backdrop-filter:saturate(130%) blur(6px);
+  }
+  .brand{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .logo{
+    display:flex;align-items:center;gap:12px;
+  }
+  .logo-badge{
+    width:40px;height:40px;border-radius:12px;
+    background: radial-gradient(60% 60% at 40% 35%, #ffe9d6 0%, #ffd8b8 60%, #ffcaa0 100%);
+    display:grid;place-items:center; box-shadow:0 6px 16px rgba(0,0,0,.12);
+  }
+  .logo-badge span{font-size:20px}
+  h1{font-weight:800;letter-spacing:.3px;font-size:clamp(1.4rem,3vw,2rem);margin:0;color:var(--brand)}
+  nav a{
+    text-decoration:none;font-weight:700;padding:10px 14px;border-radius:999px;
+    margin:0 6px; display:inline-block;
+  }
+  nav a:hover{background:rgba(107,66,38,.1)}
+  @media (max-width:768px){ nav{width:100%;text-align:center} }
+
+  /* ============ Hero ============ */
+  .hero{position:relative;text-align:center;padding:56px 20px 34px}
+  .hero-sub{color:var(--muted);margin:10px 0 0;font-size:clamp(1rem,2.2vw,1.25rem)}
+  .cup-wrap{position:relative; display:grid; place-items:center; margin:12px auto 0}
+  .steam{position:absolute; left:50%; top:7%; transform:translateX(-50%); display:flex; gap:10px; pointer-events:none}
+  .steam span{
+    width:14px;height:46px;border-radius:999px;background:rgba(255,255,255,.85);
+    box-shadow:0 8px 22px rgba(0,0,0,.08);
+    animation:rise 3.2s ease-in infinite;
+  }
+  .steam span:nth-child(2){animation-delay:.8s}
+  .steam span:nth-child(3){animation-delay:1.6s}
+  @keyframes rise{
+    0%{transform:translateY(0) scale(1);opacity:1}
+    100%{transform:translateY(-120px) scale(.6);opacity:0}
+  }
+
+  /* ============ Sections ============ */
+  .section{padding:28px 20px}
+  .section h2{font-size:clamp(1.3rem,2.6vw,1.8rem);margin:0 0 18px;color:#5b3a29;text-align:center}
+
+  /* ============ Menu ============ */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+  .card{
+    background:var(--card);
+    border-radius:18px;
+    padding:18px;text-align:center;
+    box-shadow:0 10px 28px rgba(0,0,0,.08);
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover{transform:translateY(-4px); box-shadow:0 14px 32px rgba(0,0,0,.10)}
+  .card .pic{width:112px;height:112px;margin:2px auto 10px;display:grid;place-items:center}
+  .card h3{margin:6px 0 4px;font-size:1.05rem}
+  .desc{color:var(--muted);font-size:.95rem;margin:0 0 8px}
+  .price{font-weight:800;margin:6px 0 12px}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    border:0;border-radius:12px;background:var(--brand);
+    color:#fff;padding:10px 14px;cursor:pointer;font-weight:700;
+    box-shadow:0 8px 18px rgba(107,66,38,.25);
+  }
+  .btn:hover{background:#8b5a3c}
+  .btn:focus{outline:3px solid var(--ring); outline-offset:2px}
+
+  /* ============ Contact ============ */
+  .contact{background:var(--accent);border-top:1px solid #f2cbb0}
+  .contact form{max-width:560px;margin:12px auto 0;text-align:left;background:#fff;border-radius:16px;padding:16px;box-shadow:0 8px 22px rgba(0,0,0,.06)}
+  .field{margin:10px 0}
+  .field input,.field textarea{
+    width:100%;padding:10px 12px;border-radius:10px;border:1px solid #ead8cb; font:inherit;
+  }
+  .field input:focus,.field textarea:focus{outline:3px solid var(--ring); border-color:#e2c1a8}
+
+  /* ============ Footer & Toast ============ */
+  footer{background:var(--brand);color:#fff;text-align:center;padding:14px;font-size:.95rem}
+  .toast{
+    position:fixed;right:20px;bottom:20px;min-width:240px;max-width:320px;background:#2c2c2c;color:#fff;
+    padding:12px 14px;border-radius:12px;opacity:0;transform:translateY(20px);pointer-events:none;transition:.3s; z-index:50
+  }
+  .toast.show{opacity:1;transform:translateY(0);pointer-events:auto}
+</style>
+</head>
+
+<body data-whatsapp="+919876543210">
+  <!-- ================= HEADER ================= -->
+  <header>
+    <div class="container brand">
+      <div class="logo">
+        <div class="logo-badge"><span>🍵</span></div>
+        <h1>Tea Addict</h1>
+      </div>
+      <nav>
+        <a href="#menu">Menu</a>
+        <a href="#contact">Contact</a>
+        <a href="#find-us">Find Us</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ================= HERO ================= -->
+    <section class="hero">
+      <div class="cup-wrap">
+        <div class="steam"><span></span><span></span><span></span></div>
+
+        <!-- Inline SVG teacup (cute + classy, no external image) -->
+        <svg class="cup" width="420" height="300" viewBox="0 0 420 300" aria-label="Steaming teacup illustration" role="img">
+          <defs>
+            <linearGradient id="cupBody" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="100%" stop-color="#f3eee9"/>
+            </linearGradient>
+            <linearGradient id="tea" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#c58a55"/>
+              <stop offset="100%" stop-color="#a96c3a"/>
+            </linearGradient>
+            <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-opacity=".25"/></filter>
+          </defs>
+
+          <!-- Saucer -->
+          <ellipse cx="210" cy="240" rx="150" ry="22" fill="#e8ddd3" filter="url(#shadow)"/>
+
+          <!-- Cup body -->
+          <path d="M100 95 h220 a10 10 0 0 1 10 10 v70 a70 55 0 0 1 -70 55 h-100 a70 55 0 0 1 -70 -55 v-70 a10 10 0 0 1 10 -10 z"
+                fill="url(#cupBody)" stroke="#d9cfc6" stroke-width="3" />
+
+          <!-- Tea surface -->
+          <ellipse cx="210" cy="130" rx="98" ry="18" fill="url(#tea)" />
+
+          <!-- Cup rim highlight -->
+          <ellipse cx="210" cy="120" rx="110" ry="20" fill="none" stroke="#ffffff" stroke-width="6" opacity=".6"/>
+
+          <!-- Handle -->
+          <path d="M325 130 q55 0 55 40 t-55 40"
+                fill="none" stroke="#d9cfc6" stroke-width="12" />
+          <path d="M325 140 q38 0 38 30 t-38 30"
+                fill="none" stroke="#ffffff" stroke-width="6" opacity=".7" />
+
+          <!-- Cute tag (tea bag) -->
+          <path d="M190 160 v36 a8 8 0 0 0 8 8 h24 a8 8 0 0 0 8 -8 v-36 z" fill="#ffd29c" stroke="#e8b77a" />
+          <line x1="210" y1="160" x2="210" y2="132" stroke="#caa27c" stroke-width="2" />
+        </svg>
+      </div>
+      <p class="hero-sub">Your Daily Cup of Happiness</p>
+    </section>
+
+    <!-- ================= MENU ================= -->
+    <section id="menu" class="section">
+      <div class="container">
+        <h2>Our Special Menu</h2>
+        <div id="menu-grid" class="grid" role="list"></div>
+      </div>
+    </section>
+
+    <!-- ================= CONTACT ================= -->
+    <section id="contact" class="section contact">
+      <div class="container">
+        <h2>Contact Us</h2>
+        <p style="text-align:center;margin:0 0 8px;">
+          <strong>Phone:</strong> <a href="tel:+919876543210">+91 98765 43210</a>
+        </p>
+        <form id="contact-form" aria-label="Contact form">
+          <div class="field">
+            <label>Name<br><input name="name" required placeholder="Your name"></label>
+          </div>
+          <div class="field">
+            <label>Phone or Email<br><input name="contact" required placeholder="+91… or you@example.com"></label>
+          </div>
+          <div class="field">
+            <label>Message<br><textarea name="message" rows="4" required placeholder="I’d like to know about…"></textarea></label>
+          </div>
+          <button class="btn" type="submit">Send Message</button>
+        </form>
+        <p style="text-align:center;margin:10px 0 0;color:var(--muted);font-size:.95rem">
+          Tip: Connect this form to your email service later, or let it open WhatsApp instantly.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= FIND US ================= -->
+    <section id="find-us" class="section">
+      <div class="container">
+        <h2>Find Us</h2>
+        <p style="text-align:center;max-width:720px;margin:0 auto;color:var(--muted)">
+          Near Central Park, Main Street — City, State. Open 7AM–9PM daily.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © <span id="year"></span> Tea Addict • All Rights Reserved
+  </footer>
+
+  <div class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ================= MENU DATA (editable) ================= -->
+  <script type="application/json" id="menu-data">
+  [
+    {"name":"Masala Chai","price":25,"desc":"Spiced Indian tea with cardamom & ginger.","color":"#6b4226"},
+    {"name":"Green Tea","price":30,"desc":"Light, refreshing, antioxidant-rich.","color":"#2e7d32"},
+    {"name":"Lemon Tea","price":20,"desc":"Zesty lemon with black tea.","color":"#f4c430"},
+    {"name":"Milk Tea","price":25,"desc":"Classic creamy comfort in a cup.","color":"#c49a6c"}
+  ]
+  </script>
+
+  <!-- ================= SCRIPTS ================= -->
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Build menu cards from embedded JSON
+    (function(){
+      const grid = document.getElementById('menu-grid');
+      try{
+        const items = JSON.parse(document.getElementById('menu-data').textContent);
+        grid.innerHTML = items.map(it => cardHTML(it)).join('');
+      }catch(e){
+        grid.innerHTML = '<p>Could not load menu data.</p>';
+      }
+
+      function cardHTML(it){
+        // inline SVG icon per item (color-coded)
+        const icon = `
+        <svg width="112" height="112" viewBox="0 0 256 256" aria-hidden="true">
+          <defs>
+            <filter id="s"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-opacity=".18"/></filter>
+          </defs>
+          <rect x="20" y="20" width="216" height="216" rx="28" fill="${it.color}22"></rect>
+          <g filter="url(#s)">
+            <path d="M64 148h104c22 0 40-18 40-40s-18-40-40-40h-16"
+                  fill="none" stroke="${it.color}" stroke-width="12" stroke-linecap="round"/>
+            <path d="M64 68h120v60c0 32-26 58-58 58h-4c-32 0-58-26-58-58V68z"
+                  fill="#fff" stroke="${it.color}" stroke-width="10"/>
+            <path d="M110 48c0 12-12 12-12 24s12 12 12 24"
+                  fill="none" stroke="${it.color}" stroke-width="8" stroke-linecap="round"/>
+            <path d="M138 48c0 12-12 12-12 24s12 12 12 24"
+                  fill="none" stroke="${it.color}" stroke-width="8" stroke-linecap="round"/>
+          </g>
+        </svg>`;
+
+        return `
+        <article class="card" role="listitem">
+          <div class="pic">${icon}</div>
+          <h3>${it.name}</h3>
+          <p class="desc">${it.desc || ""}</p>
+          <p class="price">₹${it.price}</p>
+          <button class="btn" data-tea="${it.name}" data-price="${it.price}" aria-label="Order ${it.name}">Order Now</button>
+        </article>`;
+      }
+    })();
+
+    // Smooth scroll for nav
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click',e=>{
+        const id = a.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth'}); }
+      });
+    });
+
+    // Toast helper
+    function showToast(html){
+      let toast = document.querySelector('.toast');
+      toast.innerHTML = html;
+      toast.classList.add('show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(()=>toast.classList.remove('show'), 3000);
+    }
+
+    // WhatsApp order on button click
+    document.body.addEventListener('click', (e)=>{
+      const btn = e.target.closest('.btn[data-tea]');
+      if(!btn) return;
+      const tea = btn.dataset.tea;
+      const price = btn.dataset.price;
+      const phone = (document.body.dataset.whatsapp || "+919876543210").replace(/\D/g,'');
+      const msg = encodeURIComponent(`Hello Tea Addict! I'd like to order: ${tea} (₹${price}).`);
+      window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+      showToast(`☕ Order started on WhatsApp: <b>${tea}</b>`);
+    });
+
+    // Contact form: open WhatsApp with message (works offline, no backend)
+    document.getElementById('contact-form').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const data = new FormData(e.target);
+      const name = data.get('name');
+      const contact = data.get('contact');
+      const message = data.get('message');
+      const phone = (document.body.dataset.whatsapp || "+919876543210").replace(/\D/g,'');
+      const text = encodeURIComponent(
+        `Contact enquiry:\nName: ${name}\nContact: ${contact}\nMessage: ${message}`
+      );
+      window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+      showToast('✅ Message drafted on WhatsApp. You can send it now.');
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>
+
